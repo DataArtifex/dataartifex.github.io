@@ -1,0 +1,28 @@
+body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: 'Roboto', sans-serif; /* Set Roboto as the default font */
+
+    background-color: #000000;
+}
+
+.content-container {
+    width: 80%; /* Adjusted to create a 10% side margin effect */
+    height: 80%; /* Adjusted to create a 10% top and bottom margin effect */
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Centers the child elements horizontally */
+    justify-content: center; /* Adjusts the vertical alignment */
+}
+
+.image-container img {
+    max-width: 100%; /* Allow the image to scale within the container */
+    max-height: 100%; /* Maintain full container height */
+    object-fit: cover; /* Ensures the image covers the adjusted area */
+    border: 2px solid #ebd4b8;
+}
