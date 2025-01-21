@@ -22,6 +22,10 @@ jobs:
 
       - name: Clone `gh-pages` Branches from Source Repositories
         run: |
-          rm -rf dartfx-postmanapi
-          git clone --depth 1 --branch gh-pages https://${{ secrets.HVDNET_DEV_ACCESS_TOKEN }}@github.com/DataArtifex/postman-api dartfx-postmanapi
+          rm -rf docs
+          git clone --depth 1 --branch gh-pages https://${{ secrets.HVDNET_DEV_ACCESS_TOKEN }}@github.com/DataArtifex/postman-api docs/dartfx-postmanapi
 
+      - name: Deploy to GitHub Pages
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: docs/  # Deploy as-is, without rebuilding      
