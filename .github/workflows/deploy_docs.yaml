@@ -1,4 +1,4 @@
-name: Deploy Aggregated Sphinx Docs
+name: Deploy Aggregated Docs to Custom Domain
 
 on:
   workflow_dispatch:
@@ -10,35 +10,25 @@ on:
 
 permissions:
   contents: write
-  pages: write
-  id-token: write
 
 jobs:
-  fetch-docs:
+  aggregate-docs:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Organization Docs Repository
+      - name: Checkout `dataartifex.github.io` Repository
         uses: actions/checkout@v4
+        with:
+          ref: main
 
-      - name: Clone `gh-pages` Branches from Source Repositories
+      - name: Fetch Docs for `dartfx-postmanapi` Repository
         run: |
           rm -rf docs/dartfx-postmanapi
-          git clone --depth 1 --branch gh-pages https://${{ secrets.HVDNET_DEV_ACCESS_TOKEN }}@github.com/DataArtifex/postman-api docs/dartfx-postmanapi
-          ls -l docs/dartfx-postmanapi
+          git clone --depth 1 --branch gh-pages https://${{ secrets.HVDNET_DEV_ACCESS_TOKEN }}@github.com/dataartifex/postman-api.git docs/dartfx-postmanapi
 
-      - name: Deploy to GitHub Pages
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: docs/  # Deploy as-is, without rebuilding      
-
-  deploy:
-    needs: fetch-docs
-    runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-
-    steps:
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+      - name: Commit and Push Aggregated Docs
+        run: |
+          git config --global user.name "github-actions"
+          git config --global user.email "github-actions@github.com"
+          git add .
+          git commit -m "Update aggregated documentation" || echo "No changes to commit"
+          git push origin main
