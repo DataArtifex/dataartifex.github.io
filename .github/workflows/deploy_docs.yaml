@@ -20,19 +20,11 @@ jobs:
         with:
           ref: main
 
-      - name: Clean Up Old Docs
-        run: |
-          git submodule deinit -f docs/dartfx-postmanapi || true
-          rm -rf .git/modules/docs/dartfx-postmanapi || true
-          rm -rf docs/dartfx-postmanapi
-          
       - name: Fetch Docs for `dartfx-postmanapi` Repository
         run: |
-          rm -rf temp/dartfx-postmanapi
-          git clone --depth 1 --branch gh-pages https://${{ secrets.HVDNET_DEV_ACCESS_TOKEN }}@github.com/dataartifex/postman-api.git temp/dartfx-postmanapi
           rm -rf docs/dartfx-postmanapi
-          mv temp/dartfx-postmanapi docs/dartfx-postmanapi
-          rm -rf temp          
+          git clone --depth 1 --branch gh-pages https://${{ secrets.HVDNET_DEV_ACCESS_TOKEN }}@github.com/dataartifex/postman-api.git docs/dartfx-postmanapi
+          rm -rf docs/dartfx-postmanapi/.git
 
       - name: Commit and Push Aggregated Docs
         run: |
