@@ -20,6 +20,12 @@ jobs:
         with:
           ref: main
 
+      - name: Clean Up Old Docs
+        run: |
+          git submodule deinit -f docs/dartfx-postmanapi || true
+          rm -rf .git/modules/docs/dartfx-postmanapi || true
+          rm -rf docs/dartfx-postmanapi
+          
       - name: Fetch Docs for `dartfx-postmanapi` Repository
         run: |
           rm -rf temp/dartfx-postmanapi
