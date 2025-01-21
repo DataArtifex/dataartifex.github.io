@@ -22,8 +22,11 @@ jobs:
 
       - name: Fetch Docs for `dartfx-postmanapi` Repository
         run: |
+          rm -rf temp/dartfx-postmanapi
+          git clone --depth 1 --branch gh-pages https://${{ secrets.HVDNET_DEV_ACCESS_TOKEN }}@github.com/dataartifex/postman-api.git temp/dartfx-postmanapi
           rm -rf docs/dartfx-postmanapi
-          git clone --depth 1 --branch gh-pages https://${{ secrets.HVDNET_DEV_ACCESS_TOKEN }}@github.com/dataartifex/postman-api.git docs/dartfx-postmanapi
+          mv temp/dartfx-postmanapi docs/dartfx-postmanapi
+          rm -rf temp          
 
       - name: Commit and Push Aggregated Docs
         run: |
