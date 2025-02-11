@@ -26,6 +26,12 @@ jobs:
           git clone --depth 1 --branch gh-pages https://${{ secrets.HVDNET_DEV_ACCESS_TOKEN }}@github.com/dataartifex/postman-api.git docs/dartfx-postmanapi
           rm -rf docs/dartfx-postmanapi/.git
 
+      - name: Fetch Docs for `dartfx-uscensus` Repository
+        run: |
+          rm -rf docs/dartfx-uscensus
+          git clone --depth 1 --branch gh-pages https://${{ secrets.HVDNET_DEV_ACCESS_TOKEN }}@github.com/dataartifex/uscensus-toolkit.git docs/dartfx-uscensus
+          rm -rf docs/dartfx-uscensus/.git
+
       - name: Commit and Push Aggregated Docs
         run: |
           git config --global user.name "github-actions"
