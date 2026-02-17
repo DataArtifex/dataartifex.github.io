@@ -1,0 +1,768 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Schema Specification Reference &mdash; dartfx-unf 0.1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=01f34227"></script>
+      <script src="_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="_static/copybutton.js?v=f281be69"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="UNF v6 Specification Summary" href="spec_summary.html" />
+    <link rel="prev" title="Usage Guide" href="usage.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html">
+            
+              <img src="_static/logo.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting Started:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Usage Guide</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Schema Specification Reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#schema-format-json-schema">Schema Format: JSON Schema</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#basic-structure">Basic Structure</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#supported-data-types">Supported Data Types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#input-methods">Input Methods</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#file-path">1. File Path</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#inline-json-string">2. Inline JSON String</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#python-dictionary-python-api-only">3. Python Dictionary (Python API only)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#partial-schemas">Partial Schemas</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#date-and-datetime-format-specification">Date and DateTime Format Specification</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#single-format">Single Format</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#multiple-formats-oneof">Multiple Formats (oneOf)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#nullable-types">Nullable Types</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#order-independence">Order Independence</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#error-handling">Error Handling</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#type-casting-behavior">Type Casting Behavior</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#successful-type-conversions">Successful Type Conversions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#date-format-mismatch-errors">Date Format Mismatch Errors</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#missing-columns">Missing Columns</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#failed-type-conversion">Failed Type Conversion</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#different-unf-with-without-schema">Different UNF with/without Schema</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#best-practices">Best Practices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#troubleshooting">Troubleshooting</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#type-mismatch-for-column-x">“Type mismatch for column X”</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#schema-specifies-column-x-which-doesn-t-exist">“Schema specifies column X which doesn’t exist”</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#failed-to-cast-column-x-to-type-y">“Failed to cast column X to type Y”</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#could-not-parse-dates-with-any-provided-format">“Could not parse dates with any provided format”</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id1">Different UNF with/without schema</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="spec_summary.html">UNF v6 Specification Summary</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="api/modules.html">API Reference</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">dartfx-unf</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Schema Specification Reference</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/schema.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="schema-specification-reference">
+<h1>Schema Specification Reference<a class="headerlink" href="#schema-specification-reference" title="Link to this heading"></a></h1>
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading"></a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">--schema</span></code> option allows you to explicitly define data types for columns in CSV files, overriding Polars’ automatic type inference. This is useful when:</p>
+<ul class="simple">
+<li><p>You need consistent type handling across different systems</p></li>
+<li><p>CSV data has ambiguous types (e.g., numeric IDs that look like strings)</p></li>
+<li><p>You’re processing data from external sources with known schemas</p></li>
+<li><p>You want to ensure reproducible, deterministic fingerprints</p></li>
+<li><p>Your date or datetime data uses non-ISO 8601 formats</p></li>
+</ul>
+</section>
+<section id="schema-format-json-schema">
+<h2>Schema Format: JSON Schema<a class="headerlink" href="#schema-format-json-schema" title="Link to this heading"></a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">dartfx-unf</span></code> package uses <a class="reference external" href="https://json-schema.org/">JSON Schema</a> as its schema specification format. This is a standardized, widely-understood format that integrates well with data pipelines.</p>
+<section id="basic-structure">
+<h3>Basic Structure<a class="headerlink" href="#basic-structure" title="Link to this heading"></a></h3>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;properties&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;column_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;type_name&quot;</span><span class="p">},</span>
+<span class="w">    </span><span class="nt">&quot;another_column&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;type_name&quot;</span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p><strong>Example:</strong></p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;properties&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;integer&quot;</span><span class="p">},</span>
+<span class="w">    </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="p">},</span>
+<span class="w">    </span><span class="nt">&quot;salary&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;number&quot;</span><span class="p">},</span>
+<span class="w">    </span><span class="nt">&quot;hired_date&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;date&quot;</span><span class="p">},</span>
+<span class="w">    </span><span class="nt">&quot;is_active&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;boolean&quot;</span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="supported-data-types">
+<h2>Supported Data Types<a class="headerlink" href="#supported-data-types" title="Link to this heading"></a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>JSON Schema Type</p></th>
+<th class="head"><p>Polars Type</p></th>
+<th class="head"><p>Example</p></th>
+<th class="head"><p>Notes</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">&quot;integer&quot;</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">Int64</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">42</span></code></p></td>
+<td><p>Whole numbers only</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">&quot;number&quot;</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">Float64</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">3.14</span></code></p></td>
+<td><p>Floating-point values</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">&quot;string&quot;</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">Utf8</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">&quot;hello&quot;</span></code></p></td>
+<td><p>Text data</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">&quot;boolean&quot;</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">Boolean</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">true</span></code> / <code class="docutils literal notranslate"><span class="pre">false</span></code></p></td>
+<td><p>True/False values</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">&quot;date&quot;</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">Date</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">&quot;2024-02-16&quot;</span></code></p></td>
+<td><p>ISO 8601 or custom format</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">&quot;time&quot;</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">Time</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">&quot;14:30:45&quot;</span></code></p></td>
+<td><p>ISO 8601 time format</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">&quot;date-time&quot;</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">Datetime</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">&quot;2024-02-16T14:30:45Z&quot;</span></code></p></td>
+<td><p>ISO 8601 or custom format</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">&quot;null&quot;</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">Null</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">null</span></code></p></td>
+<td><p>Missing/null-only column</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="input-methods">
+<h2>Input Methods<a class="headerlink" href="#input-methods" title="Link to this heading"></a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">--schema</span></code> option (CLI) and <code class="docutils literal notranslate"><span class="pre">schema</span></code> parameter (Python API) accept three formats:</p>
+<section id="file-path">
+<h3>1. File Path<a class="headerlink" href="#file-path" title="Link to this heading"></a></h3>
+<p>Provide a path to a JSON Schema file:</p>
+<p><strong>CLI:</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>uv<span class="w"> </span>run<span class="w"> </span>dartfx-unf<span class="w"> </span>--schema<span class="w"> </span>./data/schema.json<span class="w"> </span>data.csv
+</pre></div>
+</div>
+<p><strong>Python:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">dartfx.unf</span><span class="w"> </span><span class="kn">import</span> <span class="n">unf_file</span>
+<span class="n">report</span> <span class="o">=</span> <span class="n">unf_file</span><span class="p">(</span><span class="s2">&quot;data.csv&quot;</span><span class="p">,</span> <span class="n">schema</span><span class="o">=</span><span class="s2">&quot;schema.json&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="inline-json-string">
+<h3>2. Inline JSON String<a class="headerlink" href="#inline-json-string" title="Link to this heading"></a></h3>
+<p>Provide a JSON string directly:</p>
+<p><strong>CLI:</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>uv<span class="w"> </span>run<span class="w"> </span>dartfx-unf<span class="w"> </span>--schema<span class="w"> </span><span class="s1">&#39;{&quot;properties&quot;: {&quot;id&quot;: {&quot;type&quot;: &quot;integer&quot;}}}&#39;</span><span class="w"> </span>data.csv
+</pre></div>
+</div>
+<p><strong>Python:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">schema_json</span> <span class="o">=</span> <span class="s1">&#39;{&quot;properties&quot;: {&quot;id&quot;: {&quot;type&quot;: &quot;integer&quot;}, &quot;name&quot;: {&quot;type&quot;: &quot;string&quot;}}}&#39;</span>
+<span class="n">report</span> <span class="o">=</span> <span class="n">unf_file</span><span class="p">(</span><span class="s2">&quot;data.csv&quot;</span><span class="p">,</span> <span class="n">schema</span><span class="o">=</span><span class="n">schema_json</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="python-dictionary-python-api-only">
+<h3>3. Python Dictionary (Python API only)<a class="headerlink" href="#python-dictionary-python-api-only" title="Link to this heading"></a></h3>
+<p>Pass a dictionary mapping column names to type names:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">schema_dict</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="s2">&quot;integer&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;salary&quot;</span><span class="p">:</span> <span class="s2">&quot;number&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;hired_date&quot;</span><span class="p">:</span> <span class="s2">&quot;date&quot;</span>
+<span class="p">}</span>
+<span class="n">report</span> <span class="o">=</span> <span class="n">unf_file</span><span class="p">(</span><span class="s2">&quot;data.csv&quot;</span><span class="p">,</span> <span class="n">schema</span><span class="o">=</span><span class="n">schema_dict</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="partial-schemas">
+<h2>Partial Schemas<a class="headerlink" href="#partial-schemas" title="Link to this heading"></a></h2>
+<p>You don’t need to specify all columns. Columns not mentioned in the schema will use Polars’ automatic type inference:</p>
+<p><strong>Example:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Only override the &#39;id&#39; column; others inferred automatically</span>
+<span class="n">partial_schema</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="s2">&quot;integer&quot;</span><span class="p">}</span>
+<span class="n">report</span> <span class="o">=</span> <span class="n">unf_file</span><span class="p">(</span><span class="s2">&quot;data.csv&quot;</span><span class="p">,</span> <span class="n">schema</span><span class="o">=</span><span class="n">partial_schema</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This is useful for large files where you only need to fix a few ambiguous columns.</p>
+</section>
+<section id="date-and-datetime-format-specification">
+<h2>Date and DateTime Format Specification<a class="headerlink" href="#date-and-datetime-format-specification" title="Link to this heading"></a></h2>
+<p>By default, <code class="docutils literal notranslate"><span class="pre">date</span></code> and <code class="docutils literal notranslate"><span class="pre">date-time</span></code> columns expect data in ISO 8601 format:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">date</span></code>: <code class="docutils literal notranslate"><span class="pre">&quot;2024-02-16&quot;</span></code> (YYYY-MM-DD)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">date-time</span></code>: <code class="docutils literal notranslate"><span class="pre">&quot;2024-02-16T14:30:45&quot;</span></code> (ISO 8601)</p></li>
+</ul>
+<p>If your data uses a different date or time format, you can specify it using the JSON Schema <code class="docutils literal notranslate"><span class="pre">format</span></code> property.</p>
+<section id="single-format">
+<h3>Single Format<a class="headerlink" href="#single-format" title="Link to this heading"></a></h3>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;properties&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;hire_date&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;date&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;format&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;dd.mm.yyyy&quot;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p><strong>Supported format strings:</strong></p>
+<p><strong>Date formats:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">yyyy-mm-dd</span></code> → <code class="docutils literal notranslate"><span class="pre">2024-02-16</span></code> (ISO, default)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">dd-mm-yyyy</span></code> → <code class="docutils literal notranslate"><span class="pre">16-02-2024</span></code> (day-month-year with dashes)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">dd.mm.yyyy</span></code> → <code class="docutils literal notranslate"><span class="pre">16.02.2024</span></code> (day-month-year with dots)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">dd/mm/yyyy</span></code> → <code class="docutils literal notranslate"><span class="pre">16/02/2024</span></code> (day-month-year with slashes)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">mm-dd-yyyy</span></code> → <code class="docutils literal notranslate"><span class="pre">02-16-2024</span></code> (month-day-year with dashes)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">mm.dd.yyyy</span></code> → <code class="docutils literal notranslate"><span class="pre">02.16.2024</span></code> (month-day-year with dots)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">mm/dd/yyyy</span></code> → <code class="docutils literal notranslate"><span class="pre">02/16/2024</span></code> (month-day-year with slashes)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">yy-mm-dd</span></code> → <code class="docutils literal notranslate"><span class="pre">24-02-16</span></code> (2-digit year)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">dd-mm-yy</span></code> → <code class="docutils literal notranslate"><span class="pre">16-02-24</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">mm-dd-yy</span></code> → <code class="docutils literal notranslate"><span class="pre">02-16-24</span></code></p></li>
+<li><p>And variants with dots or slashes in place of dashes</p></li>
+</ul>
+<p><strong>DateTime formats (with time):</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">dd.mm.yyyy</span> <span class="pre">hh:mm:ss</span></code> → <code class="docutils literal notranslate"><span class="pre">16.02.2024</span> <span class="pre">14:30:45</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">dd-mm-yyyy</span> <span class="pre">hh:mm:ss</span></code> → <code class="docutils literal notranslate"><span class="pre">16-02-2024</span> <span class="pre">14:30:45</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">yyyy-mm-dd</span> <span class="pre">hh:mm:ss</span></code> → <code class="docutils literal notranslate"><span class="pre">2024-02-16</span> <span class="pre">14:30:45</span></code></p></li>
+<li><p>And variants with different separators</p></li>
+</ul>
+<p><strong>DateTime formats (ISO T-separator):</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">dd-mm-yyyyThh:mm:ss</span></code> → <code class="docutils literal notranslate"><span class="pre">16-02-2024T14:30:45</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">yyyy-mm-ddThh:mm:ss</span></code> → <code class="docutils literal notranslate"><span class="pre">2024-02-16T14:30:45</span></code> (ISO default)</p></li>
+</ul>
+<p><strong>Python Example:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">dartfx.unf</span><span class="w"> </span><span class="kn">import</span> <span class="n">unf_file</span>
+
+<span class="c1"># European date format (DD.MM.YYYY)</span>
+<span class="n">schema</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;properties&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">&quot;hire_date&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;date&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;format&quot;</span><span class="p">:</span> <span class="s2">&quot;dd.mm.yyyy&quot;</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+<span class="n">report</span> <span class="o">=</span> <span class="n">unf_file</span><span class="p">(</span><span class="s2">&quot;employees.csv&quot;</span><span class="p">,</span> <span class="n">schema</span><span class="o">=</span><span class="n">schema</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>CLI Example:</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>uv<span class="w"> </span>run<span class="w"> </span>dartfx-unf<span class="w"> </span>--schema<span class="w"> </span><span class="s1">&#39;{&quot;properties&quot;: {&quot;hire_date&quot;: {&quot;type&quot;: &quot;date&quot;, &quot;format&quot;: &quot;dd.mm.yyyy&quot;}}}&#39;</span><span class="w"> </span>employees.csv
+</pre></div>
+</div>
+</section>
+<section id="multiple-formats-oneof">
+<h3>Multiple Formats (oneOf)<a class="headerlink" href="#multiple-formats-oneof" title="Link to this heading"></a></h3>
+<p>When your data contains mixed date or datetime formats in the same column, use the JSON Schema <code class="docutils literal notranslate"><span class="pre">oneOf</span></code> property to specify multiple alternatives. The parser will try each format in order until one succeeds:</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;properties&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;transaction_date&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;date&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;oneOf&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">        </span><span class="p">{</span><span class="nt">&quot;format&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;dd.mm.yyyy&quot;</span><span class="p">},</span>
+<span class="w">        </span><span class="p">{</span><span class="nt">&quot;format&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;dd-mm-yyyy&quot;</span><span class="p">},</span>
+<span class="w">        </span><span class="p">{</span><span class="nt">&quot;format&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;yyyy-mm-dd&quot;</span><span class="p">}</span>
+<span class="w">      </span><span class="p">]</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p><strong>How it works:</strong></p>
+<ol class="arabic simple">
+<li><p>For each row, the parser tries the first format (<code class="docutils literal notranslate"><span class="pre">dd.mm.yyyy</span></code>)</p></li>
+<li><p>If parsing fails, it tries the next format (<code class="docutils literal notranslate"><span class="pre">dd-mm-yyyy</span></code>)</p></li>
+<li><p>Continues until a format succeeds</p></li>
+<li><p>Rows that can’t be parsed with any format will cause an error</p></li>
+</ol>
+<p><strong>Python Example with Mixed Date Formats:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">dartfx.unf</span><span class="w"> </span><span class="kn">import</span> <span class="n">unf_file</span>
+
+<span class="n">schema</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;properties&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">&quot;date&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;date&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;oneOf&quot;</span><span class="p">:</span> <span class="p">[</span>
+                <span class="p">{</span><span class="s2">&quot;format&quot;</span><span class="p">:</span> <span class="s2">&quot;dd.mm.yyyy&quot;</span><span class="p">},</span>     <span class="c1"># Try European first</span>
+                <span class="p">{</span><span class="s2">&quot;format&quot;</span><span class="p">:</span> <span class="s2">&quot;dd-mm-yyyy&quot;</span><span class="p">},</span>     <span class="c1"># Then dash separator</span>
+                <span class="p">{</span><span class="s2">&quot;format&quot;</span><span class="p">:</span> <span class="s2">&quot;yyyy-mm-dd&quot;</span><span class="p">}</span>      <span class="c1"># Finally ISO (fallback)</span>
+            <span class="p">]</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+<span class="n">report</span> <span class="o">=</span> <span class="n">unf_file</span><span class="p">(</span><span class="s2">&quot;mixed_dates.csv&quot;</span><span class="p">,</span> <span class="n">schema</span><span class="o">=</span><span class="n">schema</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>CSV Data Example:</strong></p>
+<div class="highlight-csv notranslate"><div class="highlight"><pre><span></span>date
+15.03.2024
+20-05-2024
+2024-02-16
+</pre></div>
+</div>
+<p>All three dates are successfully parsed despite different formats.</p>
+<p><strong>Python Example with Mixed DateTime Formats:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">dartfx.unf</span><span class="w"> </span><span class="kn">import</span> <span class="n">unf_file</span>
+
+<span class="n">schema</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;properties&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">&quot;timestamp&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;date-time&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;oneOf&quot;</span><span class="p">:</span> <span class="p">[</span>
+                <span class="p">{</span><span class="s2">&quot;format&quot;</span><span class="p">:</span> <span class="s2">&quot;dd.mm.yyyy hh:mm:ss&quot;</span><span class="p">},</span>
+                <span class="p">{</span><span class="s2">&quot;format&quot;</span><span class="p">:</span> <span class="s2">&quot;dd-mm-yyyyThh:mm:ss&quot;</span><span class="p">},</span>
+                <span class="p">{</span><span class="s2">&quot;format&quot;</span><span class="p">:</span> <span class="s2">&quot;yyyy-mm-ddThh:mm:ss&quot;</span><span class="p">}</span>
+            <span class="p">]</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+<span class="n">report</span> <span class="o">=</span> <span class="n">unf_file</span><span class="p">(</span><span class="s2">&quot;mixed_timestamps.csv&quot;</span><span class="p">,</span> <span class="n">schema</span><span class="o">=</span><span class="n">schema</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Notes on oneOf:</strong></p>
+<ul class="simple">
+<li><p>Formats are tried in the order specified</p></li>
+<li><p>Use the most specific format first (more likely to succeed)</p></li>
+<li><p>Use a general fallback format last (e.g., ISO 8601)</p></li>
+<li><p>Empty values or NULL values will still parse as missing/null</p></li>
+</ul>
+</section>
+</section>
+<section id="nullable-types">
+<h2>Nullable Types<a class="headerlink" href="#nullable-types" title="Link to this heading"></a></h2>
+<p>JSON Schema supports union types that combine multiple type options, including <code class="docutils literal notranslate"><span class="pre">null</span></code>. This is useful for describing optional fields:</p>
+<p><strong>Example Schema:</strong></p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;properties&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;integer&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;null&quot;</span><span class="p">]},</span>
+<span class="w">    </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;string&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;null&quot;</span><span class="p">]},</span>
+<span class="w">    </span><span class="nt">&quot;salary&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;number&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;null&quot;</span><span class="p">]}</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>When a type specification is a list, <code class="docutils literal notranslate"><span class="pre">dartfx-unf</span></code> automatically extracts the <strong>primary (non-null) type</strong>:</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Schema Type</p></th>
+<th class="head"><p>Primary Type Used</p></th>
+<th class="head"><p>Reason</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">&quot;integer&quot;</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">integer</span></code></p></td>
+<td><p>Single type, used directly</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">[&quot;integer&quot;,</span> <span class="pre">&quot;null&quot;]</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">integer</span></code></p></td>
+<td><p>Filters out <code class="docutils literal notranslate"><span class="pre">null</span></code>, uses <code class="docutils literal notranslate"><span class="pre">integer</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">[&quot;null&quot;,</span> <span class="pre">&quot;string&quot;]</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">string</span></code></p></td>
+<td><p>Filters out <code class="docutils literal notranslate"><span class="pre">null</span></code>, uses <code class="docutils literal notranslate"><span class="pre">string</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">[&quot;null&quot;]</span></code></p></td>
+<td><p><em>(skipped)</em></p></td>
+<td><p>No primary type; column ignored with warning</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Python Example:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">dartfx.unf</span><span class="w"> </span><span class="kn">import</span> <span class="n">unf_file</span>
+
+<span class="c1"># Schema with nullable types</span>
+<span class="n">schema</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;integer&quot;</span><span class="p">,</span> <span class="s2">&quot;null&quot;</span><span class="p">],</span>
+    <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;string&quot;</span><span class="p">,</span> <span class="s2">&quot;null&quot;</span><span class="p">],</span>
+    <span class="s2">&quot;salary&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;number&quot;</span><span class="p">,</span> <span class="s2">&quot;null&quot;</span><span class="p">]</span>
+<span class="p">}</span>
+<span class="n">report</span> <span class="o">=</span> <span class="n">unf_file</span><span class="p">(</span><span class="s2">&quot;data.csv&quot;</span><span class="p">,</span> <span class="n">schema</span><span class="o">=</span><span class="n">schema</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>CLI Example:</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>uv<span class="w"> </span>run<span class="w"> </span>dartfx-unf<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--schema<span class="w"> </span><span class="s1">&#39;{&quot;properties&quot;: {&quot;id&quot;: {&quot;type&quot;: [&quot;integer&quot;, &quot;null&quot;]}, &quot;name&quot;: {&quot;type&quot;: [&quot;string&quot;, &quot;null&quot;]}}}&#39;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>data.csv
+</pre></div>
+</div>
+<section id="order-independence">
+<h3>Order Independence<a class="headerlink" href="#order-independence" title="Link to this heading"></a></h3>
+<p>The order of types in the list doesn’t matter:</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;integer&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;null&quot;</span><span class="p">]}</span><span class="w">    </span><span class="err">#</span><span class="w"> </span><span class="err">←</span><span class="w"> </span><span class="err">i</span><span class="kc">nte</span><span class="err">ger</span><span class="w"> </span><span class="err">will</span><span class="w"> </span><span class="err">be</span><span class="w"> </span><span class="err">used</span>
+<span class="p">{</span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;null&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;integer&quot;</span><span class="p">]}</span><span class="w">    </span><span class="err">#</span><span class="w"> </span><span class="err">←</span><span class="w"> </span><span class="err">i</span><span class="kc">nte</span><span class="err">ger</span><span class="w"> </span><span class="err">will</span><span class="w"> </span><span class="err">be</span><span class="w"> </span><span class="err">used</span><span class="w"> </span><span class="err">(same</span><span class="w"> </span><span class="err">resul</span><span class="kc">t</span><span class="err">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="error-handling">
+<h2>Error Handling<a class="headerlink" href="#error-handling" title="Link to this heading"></a></h2>
+<section id="type-casting-behavior">
+<h3>Type Casting Behavior<a class="headerlink" href="#type-casting-behavior" title="Link to this heading"></a></h3>
+<p>The tool attempts to cast all columns to their specified schema types. If a cast fails, an error is raised with details about what went wrong:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>❌ ValueError: Failed to cast column &#39;id&#39; from String to Int64: ...
+</pre></div>
+</div>
+<p><strong>Example that causes an error:</strong></p>
+<div class="highlight-csv notranslate"><div class="highlight"><pre><span></span>id,name,value
+alpha,Alice,100.5
+beta,Bob,200.75
+</pre></div>
+</div>
+<p>With schema:</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;properties&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;integer&quot;</span><span class="p">},</span>
+<span class="w">    </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="p">},</span>
+<span class="w">    </span><span class="nt">&quot;value&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;number&quot;</span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>This raises an error because <code class="docutils literal notranslate"><span class="pre">alpha</span></code> and <code class="docutils literal notranslate"><span class="pre">beta</span></code> cannot be cast to integers.</p>
+</section>
+<section id="successful-type-conversions">
+<h3>Successful Type Conversions<a class="headerlink" href="#successful-type-conversions" title="Link to this heading"></a></h3>
+<p><strong>Any type to string</strong> (always succeeds):</p>
+<div class="highlight-csv notranslate"><div class="highlight"><pre><span></span>id,value
+1,100
+2,200
+</pre></div>
+</div>
+<p>Schema:</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;properties&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="p">},</span>
+<span class="w">    </span><span class="nt">&quot;value&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Result: ✓ Success. <code class="docutils literal notranslate"><span class="pre">1</span></code> and <code class="docutils literal notranslate"><span class="pre">2</span></code> become <code class="docutils literal notranslate"><span class="pre">&quot;1&quot;</span></code> and <code class="docutils literal notranslate"><span class="pre">&quot;2&quot;</span></code>.</p>
+<p><strong>String to number</strong> (succeeds if values are numeric):</p>
+<div class="highlight-csv notranslate"><div class="highlight"><pre><span></span>id,amount
+&quot;1&quot;,&quot;100.5&quot;
+&quot;2&quot;,&quot;200.75&quot;
+</pre></div>
+</div>
+<p>Schema:</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;properties&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;integer&quot;</span><span class="p">},</span>
+<span class="w">    </span><span class="nt">&quot;amount&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;number&quot;</span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Result: ✓ Success, if all values are validly formatted numbers.</p>
+<p><strong>String to date</strong> (succeeds if format matches schema):</p>
+<div class="highlight-csv notranslate"><div class="highlight"><pre><span></span>date
+2024-02-16
+2024-02-17
+</pre></div>
+</div>
+<p>Schema with default format:</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;properties&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;date&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;date&quot;</span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Result: ✓ Success (ISO 8601 format is default).</p>
+<p>With custom format:</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;properties&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;date&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;date&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;format&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;dd.mm.yyyy&quot;</span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>If the CSV contains <code class="docutils literal notranslate"><span class="pre">16.02.2024</span></code>, it will parse successfully. If it contains <code class="docutils literal notranslate"><span class="pre">2024-02-16</span></code> (ISO format), it will fail.</p>
+</section>
+<section id="date-format-mismatch-errors">
+<h3>Date Format Mismatch Errors<a class="headerlink" href="#date-format-mismatch-errors" title="Link to this heading"></a></h3>
+<p><strong>Problem:</strong> Format in schema doesn’t match the actual data.</p>
+<p><strong>Example:</strong></p>
+<div class="highlight-csv notranslate"><div class="highlight"><pre><span></span>date
+16.02.2024
+17.02.2024
+</pre></div>
+</div>
+<p>Schema says ISO format:</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;properties&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;date&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;date&quot;</span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Result: ✗ Error: <code class="docutils literal notranslate"><span class="pre">Failed</span> <span class="pre">to</span> <span class="pre">cast</span> <span class="pre">column</span> <span class="pre">'date'</span> <span class="pre">from</span> <span class="pre">String</span> <span class="pre">to</span> <span class="pre">Date</span></code></p>
+<p><strong>Solution:</strong> Update the schema to match your data:</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;properties&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;date&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;date&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;format&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;dd.mm.yyyy&quot;</span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="missing-columns">
+<h3>Missing Columns<a class="headerlink" href="#missing-columns" title="Link to this heading"></a></h3>
+<p><strong>Problem:</strong> Your schema has a column that’s not in the data.</p>
+<p><strong>Solution:</strong></p>
+<ul class="simple">
+<li><p>Remove the column from the schema</p></li>
+<li><p>Or verify the column name is spelled correctly</p></li>
+</ul>
+</section>
+<section id="failed-type-conversion">
+<h3>Failed Type Conversion<a class="headerlink" href="#failed-type-conversion" title="Link to this heading"></a></h3>
+<p><strong>Problem:</strong> Type conversion failed (e.g., trying to cast “abc” to integer).</p>
+<p><strong>Solution:</strong></p>
+<ul class="simple">
+<li><p>Data in that column doesn’t match the specified type</p></li>
+<li><p>Clean the data before processing</p></li>
+<li><p>Or use a different type (e.g., “string” instead of “integer”)</p></li>
+</ul>
+</section>
+<section id="different-unf-with-without-schema">
+<h3>Different UNF with/without Schema<a class="headerlink" href="#different-unf-with-without-schema" title="Link to this heading"></a></h3>
+<p><strong>Expected behavior:</strong> Adding a schema <em>may</em> change the UNF if types are different.</p>
+<p><strong>Example:</strong></p>
+<ul class="simple">
+<li><p>Without schema: <code class="docutils literal notranslate"><span class="pre">&quot;001&quot;</span></code> → string → UNF: <code class="docutils literal notranslate"><span class="pre">ABC...</span></code></p></li>
+<li><p>With schema (<code class="docutils literal notranslate"><span class="pre">&quot;integer&quot;</span></code>): <code class="docutils literal notranslate"><span class="pre">1</span></code> (value changed) → UNF: <code class="docutils literal notranslate"><span class="pre">XYZ...</span></code></p></li>
+</ul>
+<p>This is <strong>correct</strong>. The UNF changed because the normalized value changed.</p>
+<p>If you want the UNF to remain the same, don’t use a schema, or ensure the schema types match the auto-inferred types.</p>
+</section>
+</section>
+<section id="best-practices">
+<h2>Best Practices<a class="headerlink" href="#best-practices" title="Link to this heading"></a></h2>
+<ol class="arabic">
+<li><p><strong>Start Simple</strong>: Only override columns that truly need it.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Good: Just override the ambiguous &#39;id&#39; column</span>
+<span class="n">schema</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;properties&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;integer&quot;</span><span class="p">}}}</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>Use Standards-Compliant Formats</strong>: Use ISO 8601 or well-known regional formats.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Good: Standard European format</span>
+<span class="p">{</span><span class="s2">&quot;format&quot;</span><span class="p">:</span> <span class="s2">&quot;dd.mm.yyyy&quot;</span><span class="p">}</span>
+
+<span class="c1"># Less ideal: Obscure custom format</span>
+<span class="p">{</span><span class="s2">&quot;format&quot;</span><span class="p">:</span> <span class="s2">&quot;d/M/yyyy&quot;</span><span class="p">}</span>  <span class="c1"># Would need to be manually supported</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>Validate Your Data</strong>: Before applying a schema, check that your data matches.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">polars</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pl</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">&quot;data.csv&quot;</span><span class="p">)</span>
+<span class="c1"># Manually check a few rows match the schema</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>Document Your Schema</strong>: Include comments or a README explaining why the schema is needed.</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Employee records with European date format&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;properties&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;hire_date&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;date&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;format&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;dd.mm.yyyy&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Hire date in European format DD.MM.YYYY&quot;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>Test Schema Changes</strong>: When modifying a schema, verify that UNF fingerprints change as expected.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>uv<span class="w"> </span>run<span class="w"> </span>dartfx-unf<span class="w"> </span>--quiet<span class="w"> </span>--schema<span class="w"> </span>schema_v1.json<span class="w"> </span>data.csv<span class="w"> </span>&gt;<span class="w"> </span>hash_v1.txt
+uv<span class="w"> </span>run<span class="w"> </span>dartfx-unf<span class="w"> </span>--quiet<span class="w"> </span>--schema<span class="w"> </span>schema_v2.json<span class="w"> </span>data.csv<span class="w"> </span>&gt;<span class="w"> </span>hash_v2.txt
+diff<span class="w"> </span>hash_v1.txt<span class="w"> </span>hash_v2.txt<span class="w">  </span><span class="c1"># Should differ if types changed</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>Share Schemas</strong>: Distribute schemas with exported data for reproducibility.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Package both together</span>
+tar<span class="w"> </span>-czf<span class="w"> </span>dataset.tar.gz<span class="w"> </span>data.csv<span class="w"> </span>schema.json
+</pre></div>
+</div>
+</li>
+</ol>
+</section>
+<section id="troubleshooting">
+<h2>Troubleshooting<a class="headerlink" href="#troubleshooting" title="Link to this heading"></a></h2>
+<section id="type-mismatch-for-column-x">
+<h3>“Type mismatch for column X”<a class="headerlink" href="#type-mismatch-for-column-x" title="Link to this heading"></a></h3>
+<p><strong>Problem:</strong> You specified a type that doesn’t match the inferred type.</p>
+<p><strong>Solution:</strong></p>
+<ul class="simple">
+<li><p>Check the actual values in your CSV for that column</p></li>
+<li><p>Use <code class="docutils literal notranslate"><span class="pre">pl.read_csv()</span></code> to see what types are inferred</p></li>
+<li><p>Adjust the schema or clean the data</p></li>
+</ul>
+</section>
+<section id="schema-specifies-column-x-which-doesn-t-exist">
+<h3>“Schema specifies column X which doesn’t exist”<a class="headerlink" href="#schema-specifies-column-x-which-doesn-t-exist" title="Link to this heading"></a></h3>
+<p><strong>Problem:</strong> Your schema has a column that’s not in the data.</p>
+<p><strong>Solution:</strong></p>
+<ul class="simple">
+<li><p>Remove the column from the schema</p></li>
+<li><p>Or verify the column name is spelled correctly</p></li>
+</ul>
+</section>
+<section id="failed-to-cast-column-x-to-type-y">
+<h3>“Failed to cast column X to type Y”<a class="headerlink" href="#failed-to-cast-column-x-to-type-y" title="Link to this heading"></a></h3>
+<p><strong>Problem:</strong> Type conversion failed (e.g., trying to cast “abc” to integer).</p>
+<p><strong>Solution:</strong></p>
+<ul class="simple">
+<li><p>Data in that column doesn’t match the specified type</p></li>
+<li><p>Clean the data before processing</p></li>
+<li><p>Or use a different type (e.g., “string” instead of “integer”)</p></li>
+</ul>
+</section>
+<section id="could-not-parse-dates-with-any-provided-format">
+<h3>“Could not parse dates with any provided format”<a class="headerlink" href="#could-not-parse-dates-with-any-provided-format" title="Link to this heading"></a></h3>
+<p><strong>Problem:</strong> None of the formats in <code class="docutils literal notranslate"><span class="pre">oneOf</span></code> matched the actual data.</p>
+<p><strong>Solution:</strong></p>
+<ul class="simple">
+<li><p>Add the correct format to the <code class="docutils literal notranslate"><span class="pre">oneOf</span></code> list</p></li>
+<li><p>Check data for inconsistencies (e.g., different separators than expected)</p></li>
+<li><p>Verify the format string is spelled correctly (lowercase letters: <code class="docutils literal notranslate"><span class="pre">dd</span></code>, <code class="docutils literal notranslate"><span class="pre">mm</span></code>, <code class="docutils literal notranslate"><span class="pre">yyyy</span></code>, <code class="docutils literal notranslate"><span class="pre">hh</span></code>, <code class="docutils literal notranslate"><span class="pre">mm</span></code>, <code class="docutils literal notranslate"><span class="pre">ss</span></code>)</p></li>
+</ul>
+</section>
+<section id="id1">
+<h3>Different UNF with/without schema<a class="headerlink" href="#id1" title="Link to this heading"></a></h3>
+<p><strong>Expected behavior:</strong> Adding a schema <em>may</em> change the UNF if types are different.</p>
+<p><strong>Example:</strong></p>
+<ul class="simple">
+<li><p>Without schema: <code class="docutils literal notranslate"><span class="pre">&quot;001&quot;</span></code> → string → UNF: <code class="docutils literal notranslate"><span class="pre">ABC...</span></code></p></li>
+<li><p>With schema (<code class="docutils literal notranslate"><span class="pre">&quot;integer&quot;</span></code>): <code class="docutils literal notranslate"><span class="pre">1</span></code> (value changed) → UNF: <code class="docutils literal notranslate"><span class="pre">XYZ...</span></code></p></li>
+</ul>
+<p>This is <strong>correct</strong>. The UNF changed because the normalized value changed.</p>
+<p>If you want the UNF to remain the same, don’t use a schema, or ensure the schema types match the auto-inferred types.</p>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="usage.html" class="btn btn-neutral float-left" title="Usage Guide" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="spec_summary.html" class="btn btn-neutral float-right" title="UNF v6 Specification Summary" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Data Artifex.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
