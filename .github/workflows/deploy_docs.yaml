@@ -23,7 +23,7 @@ jobs:
       - name: Fetch Docs for `dartfx-ddi` Repository
         run: |
           rm -rf docs/dartfx-ddi
-          git clone --depth 1 --branch gh-pages https://${{ secrets.HVDNET_DEV_ACCESS_TOKEN }}@github.com/dataartifex/ddi.git docs/dartfx-ddi
+          git clone --depth 1 --branch gh-pages https://${{ secrets.HVDNET_DEV_ACCESS_TOKEN }}@github.com/dataartifex/ddi-toolkit.git docs/dartfx-ddi
           rm -rf docs/dartfx-ddi/.git
 
       - name: Fetch Docs for `dartfx-postmanapi` Repository
@@ -35,7 +35,7 @@ jobs:
       - name: Fetch Docs for `dartfx-rdf` Repository
         run: |
           rm -rf docs/dartfx-rdf
-          git clone --depth 1 --branch gh-pages https://${{ secrets.HVDNET_DEV_ACCESS_TOKEN }}@github.com/dataartifex/rdf.git docs/dartfx-rdf
+          git clone --depth 1 --branch gh-pages https://${{ secrets.HVDNET_DEV_ACCESS_TOKEN }}@github.com/dataartifex/rdf-toolkit.git docs/dartfx-rdf
           rm -rf docs/dartfx-rdf/.git
 
       - name: Fetch Docs for `dartfx-unf` Repository
