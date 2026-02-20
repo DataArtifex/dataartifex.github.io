@@ -20,11 +20,11 @@ jobs:
         with:
           ref: main
 
-      - name: Fetch Docs for `dartfx-dditoolkit` Repository
+      - name: Fetch Docs for `dartfx-ddi` Repository
         run: |
-          rm -rf docs/dartfx-dditoolkit
-          git clone --depth 1 --branch gh-pages https://${{ secrets.HVDNET_DEV_ACCESS_TOKEN }}@github.com/dataartifex/ddi-toolkit.git docs/dartfx-dditoolkit
-          rm -rf docs/dartfx-dditoolkit/.git
+          rm -rf docs/dartfx-ddi
+          git clone --depth 1 --branch gh-pages https://${{ secrets.HVDNET_DEV_ACCESS_TOKEN }}@github.com/dataartifex/ddi.git docs/dartfx-ddi
+          rm -rf docs/dartfx-ddi/.git
 
       - name: Fetch Docs for `dartfx-postmanapi` Repository
         run: |
@@ -32,11 +32,11 @@ jobs:
           git clone --depth 1 --branch gh-pages https://${{ secrets.HVDNET_DEV_ACCESS_TOKEN }}@github.com/dataartifex/postman-api.git docs/dartfx-postmanapi
           rm -rf docs/dartfx-postmanapi/.git
 
-      - name: Fetch Docs for `dartfx-rdftoolkit` Repository
+      - name: Fetch Docs for `dartfx-rdf` Repository
         run: |
-          rm -rf docs/dartfx-rdftoolkit
-          git clone --depth 1 --branch gh-pages https://${{ secrets.HVDNET_DEV_ACCESS_TOKEN }}@github.com/dataartifex/rdf-toolkit.git docs/dartfx-rdftoolkit
-          rm -rf docs/dartfx-rdftoolkit/.git
+          rm -rf docs/dartfx-rdf
+          git clone --depth 1 --branch gh-pages https://${{ secrets.HVDNET_DEV_ACCESS_TOKEN }}@github.com/dataartifex/rdf.git docs/dartfx-rdf
+          rm -rf docs/dartfx-rdf/.git
 
       - name: Fetch Docs for `dartfx-unf` Repository
         run: |
