@@ -26,6 +26,12 @@ jobs:
           git clone --depth 1 --branch gh-pages https://${{ secrets.HVDNET_DEV_ACCESS_TOKEN }}@github.com/dataartifex/ddi-toolkit.git docs/dartfx-ddi
           rm -rf docs/dartfx-ddi/.git
 
+      - name: Fetch Docs for `dartfx-mtnards` Repository
+        run: |
+          rm -rf docs/dartfx-mtnards
+          git clone --depth 1 --branch gh-pages https://${{ secrets.HVDNET_DEV_ACCESS_TOKEN }}@github.com/dataartifex/mtnards-toolkit.git docs/dartfx-mtnards
+          rm -rf docs/dartfx-mtnards/.git
+
       - name: Fetch Docs for `dartfx-postmanapi` Repository
         run: |
           rm -rf docs/dartfx-postmanapi
