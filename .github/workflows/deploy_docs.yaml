@@ -20,6 +20,12 @@ jobs:
         with:
           ref: main
 
+      - name: Fetch Docs for `dartfx-dcat` Repository
+        run: |
+          rm -rf docs/dartfx-dcat
+          git clone --depth 1 --branch gh-pages https://${{ secrets.HVDNET_DEV_ACCESS_TOKEN }}@github.com/dataartifex/dcat-toolkit.git docs/dartfx-dcat
+          rm -rf docs/dartfx-dcat/.git
+
       - name: Fetch Docs for `dartfx-ddi` Repository
         run: |
           rm -rf docs/dartfx-ddi
@@ -38,11 +44,23 @@ jobs:
           git clone --depth 1 --branch gh-pages https://${{ secrets.HVDNET_DEV_ACCESS_TOKEN }}@github.com/dataartifex/postman-api.git docs/dartfx-postmanapi
           rm -rf docs/dartfx-postmanapi/.git
 
+      - name: Fetch Docs for `dartfx-postman` Repository
+        run: |
+          rm -rf docs/dartfx-postman
+          git clone --depth 1 --branch gh-pages https://${{ secrets.HVDNET_DEV_ACCESS_TOKEN }}@github.com/dataartifex/postman-api.git docs/dartfx-postman
+          rm -rf docs/dartfx-postman/.git
+
       - name: Fetch Docs for `dartfx-rdf` Repository
         run: |
           rm -rf docs/dartfx-rdf
           git clone --depth 1 --branch gh-pages https://${{ secrets.HVDNET_DEV_ACCESS_TOKEN }}@github.com/dataartifex/rdf-toolkit.git docs/dartfx-rdf
           rm -rf docs/dartfx-rdf/.git
+
+      - name: Fetch Docs for `dartfx-socrata` Repository
+        run: |
+          rm -rf docs/dartfx-dcat
+          git clone --depth 1 --branch gh-pages https://${{ secrets.HVDNET_DEV_ACCESS_TOKEN }}@github.com/dataartifex/dcat-toolkit.git docs/dartfx-dcat
+          rm -rf docs/dartfx-dcat/.git
 
       - name: Fetch Docs for `dartfx-unf` Repository
         run: |
